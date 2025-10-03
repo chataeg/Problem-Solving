@@ -40,12 +40,14 @@ int main(void) {
 		
 		while (iter != v.end())
 		{
-			if (lower_bound(iter, v.end(), *iter + mid) != v.end())
+			auto next_pos = lower_bound(iter, v.end(), *iter + mid);
+			if (next_pos != v.end())
 			{
-				iter = lower_bound(iter, v.end(), *iter + mid);
+				iter = next_pos;
 				cnt++;
 			}
-			else iter++;
+			else
+				iter++;
 		}
 		
 		if (cnt >= c)
