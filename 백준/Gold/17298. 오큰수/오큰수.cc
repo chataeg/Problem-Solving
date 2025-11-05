@@ -1,40 +1,59 @@
 #include <iostream>
+#include <vector>
+#include <queue>
 #include <stack>
-#include <sstream>
-
+#include <set>
+#include <deque>
+#include <algorithm>
+#include <list>
 using namespace std;
 
-int main() {
 
-    int input;
+stack<int> s;
+int arr[1000007];
 
-    cin >> input;
+int main(void) {
+    ios::sync_with_stdio(0);
+    cin.tie(0);
 
-    stack<int> s;
-    stack<int> result;
+    int n;
 
-    int arr[1000000] ;
+    cin >> n;
+    // 7 2 5 3 
+    // 8 4 5 9
+    
 
-    for(int i = 0 ; i < input ; i++)
+    // 7 2 5 3
+    // 3 2 7
+
+    // 5  7 7 -1
+
+    // 9 5 4 8
+    // -1 8 8 -1
+    // 
+    for (int i = 0; i < n; i++)
     {
-        int tmp;
-        cin >> tmp;
-
-        arr[i] = tmp;
+        int input;
+        cin >> input;
+        arr[i] = input;
     }
 
-    for(int i = 0 ; i < input ; i++)
-    {
+    // 3 5 2 7 
 
-        while(1)
+    // arr
+    //       5
+
+    for (int i = 0; i < n; i++)
+    {
+        while (1)
         {
-            if(s.empty())
+            if (s.empty())
             {
                 s.push(i);
                 break;
             }
 
-            if(arr[i] > arr[s.top()])
+            if (arr[i] > arr[s.top()])
             {
                 arr[s.top()] = arr[i];
                 s.pop();
@@ -42,23 +61,22 @@ int main() {
             else
             {
                 s.push(i);
-                break;
+                break; 
             }
         }
     }
-
-    while(!s.empty())
+    
+    while (!s.empty())
     {
         int idx = s.top();
         arr[idx] = -1;
         s.pop();
     }
 
-    for(int i = 0 ; i < input ; i++)
+    for (int i = 0; i < n; i++)
     {
-        cout << arr[i] <<' ';
+        cout << arr[i] << " ";
     }
-
 
 
     return 0;
