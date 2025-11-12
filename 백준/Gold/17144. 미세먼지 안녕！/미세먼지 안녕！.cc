@@ -7,8 +7,8 @@
 using namespace std;
 
 struct pos {
-	int x;
 	int y;
+	int x;
 };
 int r, c, t;
 
@@ -23,57 +23,57 @@ void executehead()
 	queue<int> q;
 
 
-	pos cur = { head.x,head.y };
-	int dx[4] = {0,-1,0,1};
-	int dy[4] = {1,0,-1,0};
+	pos cur = { head.y,head.x };
+	int dy[4] = { 0,-1,0,1 };
+	int dx[4] = { 1,0,-1,0 };
 
 	q.push(0);
 
 	int dir = 0;
 	while (1)
 	{
-	
-		int nx = cur.x + dx[dir];
-		int ny = cur.y + dy[dir];
 
-		if (nx < 0 || ny < 0 || nx >= r || ny >= c)
+		int ny = cur.y + dy[dir];
+		int nx = cur.x + dx[dir];
+
+		if (nx < 0 || ny < 0 || ny >= r || nx >= c)
 		{
 			dir++;
 			continue;
 		}
 
-		if (arr[nx][ny] == -1 && ny == 0)
+		if (arr[ny][nx] == -1 && nx == 0)
 		{
 			break;
 		}
 
-		q.push(arr[nx][ny]);
-		cur = { nx,ny };
+		q.push(arr[ny][nx]);
+		cur = { ny,nx };
 	}
-	
-	cur = { head.x , head.y };
+
+	cur = { head.y , head.x };
 	dir = 0;
 
 	while (1)
 	{
-		
-		int nx = cur.x + dx[dir];
-		int ny = cur.y + dy[dir];
 
-		if (nx < 0 || ny < 0 || nx >= r || ny >= c)
+		int ny = cur.y + dy[dir];
+		int nx = cur.x + dx[dir];
+
+		if (nx < 0 || ny < 0 || nx >= c || ny >= r)
 		{
 			dir++;
 			continue;
 		}
 
-		if (arr[nx][ny] == -1 && ny == 0)
+		if (arr[ny][nx] == -1 && nx == 0)
 		{
 			break;
 		}
 
-		arr[nx][ny] = q.front();
+		arr[ny][nx] = q.front();
 		q.pop();
-		cur = { nx,ny };
+		cur = { ny,nx };
 	}
 
 
@@ -83,9 +83,9 @@ void executebody()
 {
 	queue<int> q;
 
-	pos cur = { body.x,body.y };
-	int dx[4] = { 0,1,0,-1 };
-	int dy[4] = { 1,0,-1,0 };
+	pos cur = { body.y,body.x };
+	int dy[4] = { 0,1,0,-1 };
+	int dx[4] = { 1,0,-1,0 };
 
 	q.push(0);
 
@@ -93,54 +93,54 @@ void executebody()
 	while (1)
 	{
 
-		int nx = cur.x + dx[dir];
 		int ny = cur.y + dy[dir];
+		int nx = cur.x + dx[dir];
 
-		if (nx < 0 || ny < 0 || nx >= r || ny >= c)
+		if (nx < 0 || ny < 0 || ny >= r || nx >= c)
 		{
 			dir++;
 			continue;
 		}
 
-		if (arr[nx][ny] == -1 && ny == 0)
+		if (arr[ny][nx] == -1 && nx == 0)
 		{
 			break;
 		}
 
-		q.push(arr[nx][ny]);
-		cur = { nx,ny };
+		q.push(arr[ny][nx]);
+		cur = { ny,nx };
 	}
 
-	cur = { body.x , body.y };
+	cur = { body.y , body.x };
 	dir = 0;
 
 	while (1)
 	{
 
-		int nx = cur.x + dx[dir];
 		int ny = cur.y + dy[dir];
+		int nx = cur.x + dx[dir];
 
-		if (nx < 0 || ny < 0 || nx >= r || ny >= c)
+		if (nx < 0 || ny < 0 || ny >= r || nx >= c)
 		{
 			dir++;
 			continue;
 		}
 
-		if (arr[nx][ny] == -1 && ny == 0)
+		if (arr[ny][nx] == -1 && nx == 0)
 		{
 			break;
 		}
 
-		arr[nx][ny] = q.front();
+		arr[ny][nx] = q.front();
 		q.pop();
-		cur = { nx,ny };
+		cur = { ny,nx };
 	}
 }
 
 
 int main() {
 	ios::sync_with_stdio(0);
-	cin.tie(0); 
+	cin.tie(0);
 
 	cin >> r >> c >> t;
 
@@ -155,7 +155,7 @@ int main() {
 			if (!found && arr[i][j] == -1)
 			{
 				head = { i,j };
-				body = { i + 1,j };
+				body = { i+1,j };
 				found = true;
 			}
 		}
@@ -173,21 +173,21 @@ int main() {
 			{
 				if (tmp[i][j] > 0)
 				{
-					
+
 					int spread = tmp[i][j] / 5;
 
 
 					for (int dir = 0; dir < 4; dir++)
 					{
-						int nx = i + dx[dir];
-						int ny = j + dy[dir];
+						int ny = i + dy[dir];
+						int nx = j + dx[dir];
 
-						if (nx < 0 || nx >= r || ny < 0 || ny >= c)
+						if (nx < 0 || ny >= r || ny < 0 || nx >= c)
 							continue;
-						if (arr[nx][ny] == -1)
+						if (arr[ny][nx] == -1)
 							continue;
 
-						arr[nx][ny] += spread;
+						arr[ny][nx] += spread;
 						arr[i][j] -= spread;
 					}
 
@@ -211,9 +211,7 @@ int main() {
 		}
 	}
 
-
 	cout << sum;
-
 
 	return 0;
 }
