@@ -15,23 +15,7 @@ using namespace std;
 int l, c;
 
 char arr[16];
-int vis[16];
-
 string vowel = "aeiou";
-
-set<string> st;
-
-bool order(string in)
-{
-    int cur = in[0];
-    for (auto iter : in)
-    {
-        if (cur > iter)
-            return false;
-        cur = iter;
-    }
-    return true;
-}
 
 bool possible(string in)
 {
@@ -52,27 +36,18 @@ bool possible(string in)
 
 void solve(int depth, string cur)
 {
-    if (!order(cur)) return;
-
-    if (depth == l)
+    if (cur.length() == l)
     {
-        if (order(cur) && possible(cur))
+        if (possible(cur))
             cout << cur << '\n';
         return;
     }
 
     for (int i = depth; i < c; i++)
     {
-        if (!vis[i])
-        {
-            cur.push_back(arr[i]);
-            vis[i] = 1;
-
-            solve(depth + 1, cur);
-
-            vis[i] = 0;
-            cur.pop_back();
-        }
+        cur.push_back(arr[i]);
+        solve(i + 1, cur);
+        cur.pop_back();
     }
 
 }
