@@ -1,70 +1,71 @@
-#define _CRT_SECURE_NO_WARNINGS
-#include <iostream>
-#include <vector>
 #include <string>
+#include <vector>
+#include <stack>
 #include <queue>
+#include <tuple>
+#include <deque>
+#include <map>
+#include <set>
 #include <algorithm>
+#include <bitset>
+#include <iostream>
 
 using namespace std;
 
+int n;
 int arr[100007];
-int N;
 
-int binarysearch(int querynum)
+int main()
 {
-	int st, mid, ed;
-	
-	st = 0;
-	ed = N-1;
-	
-	while (st <= ed)
-	{
-		mid = (st + ed) / 2;
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    
+    cin >> n;
+    for (int i = 0; i < n; i++)
+        cin >> arr[i];
 
-		if (arr[mid] > querynum)
-		{
-			ed = mid - 1;
-		}
-		else if (arr[mid] < querynum)
-		{
-			st = mid + 1;
-		}
-		else
-		{
-			return 1;
-		}
-	}
-	return 0;
+    sort(arr, arr + n);
 
-}
+    int t;
+    cin >> t;
+    while (t--)
+    {
+        int target;
+        cin >> target;
 
 
-int main(void) {
-	ios::sync_with_stdio(0);
-	cin.tie(0);
+        int l = 0;
+        int r = n - 1;
+        int mid = 0;
+        while (l <= r)
+        {
+            mid = (l + r + 1) / 2;
+
+            if (arr[mid] > target)
+            {
+                r = mid - 1;
+            }
+            else if (arr[mid] < target)
+            {
+                l = mid +1;
+            }
+            else
+                break;
+        }
+
+        // 1 2 3 4 5
+
+        if (arr[mid] == target)
+            cout << "1\n";
+        else
+            cout << "0\n";
+
+    }
+
+    
 
 
-	cin >> N;
 
 
-	for (int i = 0; i < N; i++)
-		cin >> arr[i];
-
-	sort(arr, arr + N);
-
-	int M;
-
-	cin >> M;
-
-	for (int i = 0; i < M; i++)
-	{
-		int input;
-		cin >> input;
-
-		cout << binarysearch(input) << '\n';
-	}
-	
-
-
-	return 0;
+    return 0;
 }
