@@ -12,59 +12,55 @@
 
 using namespace std;
 
-int cnt[101];
-bool breakable[101];
+int n, m;
 
-vector<pair<int, int>> v[101];
+vector<pair<int, int>> adj[107];
 
-int indegree[101];
+set<int> s;
+int cnt[107];
+int indeg[107];
 
 int main()
 {
     ios_base::sync_with_stdio(false);
     cin.tie(NULL);
 
-    int n, m;
-
     cin >> n >> m;
 
     while (m--)
     {
         int x, y, k;
+        
         cin >> x >> y >> k;
 
-        v[x].push_back({ y,k });
-        indegree[y]++;
-        breakable[x] = true;
+        adj[x].push_back({y,k});
+        indeg[y]++;
+        s.insert(x);
     }
 
     queue<int> q;
-
     q.push(n);
+
     cnt[n] = 1;
 
     while (!q.empty())
     {
-        auto cur = q.front(); 
+        auto cur = q.front();
         q.pop();
-
-        for (auto iter : v[cur])
+        for (auto iter : adj[cur])
         {
-            int next = iter.first;
-            int cost = iter.second;
+            indeg[iter.first]--;
+            
+            cnt[iter.first] += cnt[cur] * iter.second;
 
-            cnt[next] += cnt[cur] * cost; 
-
-            indegree[next]--;
-
-            if (indegree[next] == 0)
-                q.push(next);
+            if (indeg[iter.first] == 0)
+                q.push(iter.first);
         }
     }
-
+    
     for (int i = 1; i <= n; i++)
-        if (!breakable[i])
-            cout << i << " " << cnt[i] << '\n';
+        if(s.find(i) == s.end())
+            cout << i << " " << cnt[i] << endl; 
 
     return 0;
 }
