@@ -15,7 +15,7 @@ map<int, string> IOST;
 vector<int> g[1007];
 int indeg[1007];
 
-vector<int> ans[1007];
+set<int> ans[1007];
 
 int main()
 {
@@ -74,7 +74,7 @@ int main()
 
             if (indeg[iter] == 0)
             {
-                ans[cur].push_back(iter);
+                ans[cur].insert(iter);
                 q.push(iter);
             }
         }
