@@ -9,24 +9,30 @@
 using namespace std;
 int n;
 
-set<string> names;
-map<string, vector<string>> g;
-map<string, int> indeg;
-map<string, set<string>> ans;
+map<string, int> str2int;
+string int2str[1007];
+
+vector<int> g[1007];
+int indeg[1007];
+
+set<int> ans[1007];
 
 int main()
 {
     ios_base::sync_with_stdio(false);
     cin.tie(NULL);
-    
+
     cin >> n;
+    vector<string> allnames(n);
+    for (int i = 0; i < n; i++)
+        cin >> allnames[i];
+    
+    sort(allnames.begin(), allnames.end());
+
     for (int i = 0; i < n; i++)
     {
-        string input; 
-        cin >> input;
-        
-        names.insert(input);
-        indeg[input] = 0;
+        int2str[i] = allnames[i];
+        str2int[allnames[i]] = i;
     }
 
     int t;
@@ -36,20 +42,20 @@ int main()
         string a, b;
         cin >> a >> b;
 
-        g[b].push_back(a);
-        indeg[a]++;
+        g[str2int[b]].push_back(str2int[a]);
+        indeg[str2int[a]]++;
     }
 
-    queue<string> q;
-    set<string> numberoffamily;
+    queue<int> q;
+    set<string> family;
 
-    for(auto iter : names)
-        if (indeg[iter] == 0)
+    for (int i = 0; i < n; i++)
+        if (indeg[i] == 0)
         {
-            q.push(iter);
-            numberoffamily.insert(iter);
+            q.push(i);
+            family.insert(int2str[i]);
         }
-       
+
     while (!q.empty())
     {
         auto cur = q.front();
@@ -67,21 +73,20 @@ int main()
         }
     }
 
-    cout << numberoffamily.size() << endl;
+    cout << family.size() << endl;
 
-    for (auto iter : numberoffamily)
+    for (auto iter : family)
         cout << iter << " ";
 
     cout << endl;
-    
-    for(auto name : names)
+
+    for(int i = 0 ; i < n ; i++)
     {
-        cout << name << " " << ans[name].size() << " ";
-        for (auto child : ans[name])
-            cout << child << " ";
+        cout << int2str[i] << " " << ans[i].size() << " ";
+        for (auto iter : ans[i])
+            cout << int2str[iter] << " ";
         cout << '\n';
     }
-
 
     return 0;
 }
