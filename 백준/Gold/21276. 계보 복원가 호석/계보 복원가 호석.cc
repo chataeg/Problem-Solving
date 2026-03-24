@@ -9,13 +9,10 @@
 using namespace std;
 int n;
 
-map<string, int> STOI;
-map<int, string> IOST;
-
-vector<int> g[1007];
-int indeg[1007];
-
-set<int> ans[1007];
+set<string> names;
+map<string, vector<string>> g;
+map<string, int> indeg;
+map<string, set<string>> ans;
 
 int main()
 {
@@ -28,15 +25,8 @@ int main()
         string input; 
         cin >> input;
         
-        STOI[input] = i;
-    }
-
-    int ind = 0;
-    for (auto it = STOI.begin(); it != STOI.end(); it++)
-    {
-        (*it).second = ind;
-        IOST[ind] = (*it).first;
-        ind++;
+        names.insert(input);
+        indeg[input] = 0;
     }
 
     int t;
@@ -46,21 +36,18 @@ int main()
         string a, b;
         cin >> a >> b;
 
-        g[STOI[b]].push_back(STOI[a]);
-        indeg[STOI[a]]++;
+        g[b].push_back(a);
+        indeg[a]++;
     }
 
-    
-    int cnt = 0;
+    queue<string> q;
+    set<string> numberoffamily;
 
-    queue<int> q;
-    set<string> backup;
-
-    for (int i = 0; i < n; i++)
-        if (indeg[i] == 0)
+    for(auto iter : names)
+        if (indeg[iter] == 0)
         {
-            q.push(i);
-            backup.insert(IOST[i]);
+            q.push(iter);
+            numberoffamily.insert(iter);
         }
        
     while (!q.empty())
@@ -80,18 +67,18 @@ int main()
         }
     }
 
-    cout << backup.size() << endl;
+    cout << numberoffamily.size() << endl;
 
-    for (auto iter : backup)
+    for (auto iter : numberoffamily)
         cout << iter << " ";
 
     cout << endl;
     
-    for(auto name : STOI)
+    for(auto name : names)
     {
-        cout << name.first << " " << ans[name.second].size() << " ";
-        for (auto iter : ans[name.second])
-            cout << IOST[iter] << " ";
+        cout << name << " " << ans[name].size() << " ";
+        for (auto child : ans[name])
+            cout << child << " ";
         cout << '\n';
     }
 
