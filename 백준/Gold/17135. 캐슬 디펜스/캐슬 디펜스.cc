@@ -10,52 +10,43 @@
 using namespace std;
 
 int n, m, d;
-int backup[20][20];
-int arr[20][20];
+
+vector<vector<int>> arr(20, vector<int>(20,0));
+vector<vector<int>> backup(20, vector<int>(20,0));
+
+vector<int> pos; 
+
+int mx;
+int cnt;
 
 int dy[3] = {0,-1,0};
 int dx[3] = {-1,0,1};
 
-int mx = 0;
-
-vector<int> pos;
-
-vector<pair<int, int>> res;
-int cnt;
-int vis[20][20];
+vector<pair<int, int>> enemy;
 
 void onestep()
 {
 	for (int i = n - 1; i > 0; i--)
 		for (int j = 0; j < m; j++)
 			arr[i][j] = arr[i - 1][j];
-
-	for (int j = 0; j < m; j++)
-		arr[0][j] = 0;
+	
+	for (int i = 0; i < m; i++)
+		arr[0][i] = 0;
 }
 
-int getdist(pair<int, int> a, pair<int, int> b)
-{
-	return abs(a.first - b.first) + abs(a.second - b.second);
-}
-
-void shoot(int start)
+void getenemy(int sty, int stx)
 {
 	queue<pair<int, int>> q;
+	vector<vector<int>> vis(20, vector<int>(20, 0));
 
-	memset(vis, 0, sizeof(vis));
-	
-	if (arr[n - 1][start] == 1 && d >= 1)
+	q.push({ sty,stx });
+	vis[sty][stx] = 1;
+
+	if (arr[sty][stx] == 1 && d >= 1)
 	{
-		res.push_back({ n - 1,start });
+		enemy.push_back({ sty,stx });
 		return;
 	}
-
-	
-	q.push({ n-1,start });
-
-	vis[n - 1][start] = 1;
-
 
 	while (!q.empty())
 	{
@@ -67,76 +58,69 @@ void shoot(int start)
 			int ny = cur.first + dy[dir];
 			int nx = cur.second + dx[dir];
 
-			if (ny < 0 || ny >= n || nx < 0 || nx >= m) continue;
+			if (ny < 0 || ny >= n || nx < 0 || nx >= m || vis[ny][nx]) continue;
 
-			if (vis[ny][nx]) continue;
+			int dist = abs(stx - nx) + abs(sty + 1 - ny);
 
-			if (getdist({ ny,nx }, { n,start }) > d) continue;
+			if (dist > d) continue;
 
-
-			if (arr[ny][nx] == 1)
+			if (arr[ny][nx] == 1 && dist <= d)
 			{
-				res.push_back({ ny,nx });
+				enemy.push_back({ ny,nx });
 				return;
 			}
-			
+
 			vis[ny][nx] = 1;
 			q.push({ ny,nx });
-
 		}
-
 	}
-
-
-
 }
 
-void dodefense()
+void shoot()
 {
-	memcpy(arr, backup, sizeof(arr));
+	for (auto iter : enemy)
+	{
+		if (arr[iter.first][iter.second] == 1)
+		{
+			arr[iter.first][iter.second] = 0;
+			cnt++;
+		}
+	}
+}
 
+void dogame()
+{
+	arr = backup;
 	cnt = 0;
-
 
 	for (int i = 0; i < n; i++)
 	{
-
-		res.clear();
-
+		enemy.clear();
 		for(auto iter : pos)
-			shoot(iter);
-
-		for (auto iter : res)
-		{
-			if (arr[iter.first][iter.second] == 1)
-			{
-				arr[iter.first][iter.second] = 0;
-				cnt++;
-			}
-
-		}
+			getenemy(n-1,iter);	
+		shoot();
 		onestep();
 	}
 	mx = max(mx, cnt);
-
 }
+
 
 void solve(int depth, int start)
 {
 	if (depth == 3)
 	{
-		dodefense();
-
+		dogame();
 		return;
 	}
 
 	for (int i = start; i < m; i++)
 	{
 		pos.push_back(i);
-		solve(depth + 1, i+1);
+		solve(depth + 1, i + 1);
 		pos.pop_back();
 	}
 }
+
 
 int main()
 {
@@ -149,7 +133,7 @@ int main()
 		for (int j = 0; j < m; j++)
 			cin >> arr[i][j];
 
-	memcpy(backup, arr, sizeof(arr));
+	backup = arr;
 
 	solve(0, 0);
 
