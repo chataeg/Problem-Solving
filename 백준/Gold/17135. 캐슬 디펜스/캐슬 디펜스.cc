@@ -13,19 +13,25 @@ int n, m, d;
 int backup[20][20];
 int arr[20][20];
 
+int dy[3] = {0,-1,0};
+int dx[3] = {-1,0,1};
+
 int mx = 0;
 
-int vis[20];
 vector<int> pos;
 
 vector<pair<int, int>> res;
 int cnt;
+int vis[20][20];
 
 void onestep()
 {
-	for (int i = n - 1; i >= 0; i--)
+	for (int i = n - 1; i > 0; i--)
 		for (int j = 0; j < m; j++)
 			arr[i][j] = arr[i - 1][j];
+
+	for (int j = 0; j < m; j++)
+		arr[0][j] = 0;
 }
 
 int getdist(pair<int, int> a, pair<int, int> b)
@@ -33,42 +39,56 @@ int getdist(pair<int, int> a, pair<int, int> b)
 	return abs(a.first - b.first) + abs(a.second - b.second);
 }
 
-void getenemy()
+void shoot(int start)
 {
-	for (int i = n - 1; i >= 0; i--)
-		for (int j = 0; j < m; j++)
-			if (arr[i][j] == 1)
-				res.push_back({ i,j });
-}
+	queue<pair<int, int>> q;
 
-void shoot()
-{
-	vector<pair<int, int>> candid;
-	for (auto arch : pos)
+	memset(vis, 0, sizeof(vis));
+	
+	if (arr[n - 1][start] == 1 && d >= 1)
 	{
-		int size = res.size();
-		vector < tuple <int, int, int >> v;
-
-		for (int i = 0; i < size; i++)
-		{
-			int dist = getdist(res[i], { n,arch });
-			if (dist <= d)
-				v.push_back({ dist, res[i].second, res[i].first});
-		}
-		sort(v.begin(), v.end());
-
-		if (!v.empty())
-			candid.push_back({ get<2>(v.front()),get<1>(v.front()) });
+		res.push_back({ n - 1,start });
+		return;
 	}
 
-	for (auto iter : candid)
+	
+	q.push({ n-1,start });
+
+	vis[n - 1][start] = 1;
+
+
+	while (!q.empty())
 	{
-		if (arr[iter.first][iter.second] == 1)
+		auto cur = q.front();
+		q.pop();
+
+		for (int dir = 0; dir < 3; dir++)
 		{
-			arr[iter.first][iter.second] = 0;
-			cnt++;
+			int ny = cur.first + dy[dir];
+			int nx = cur.second + dx[dir];
+
+			if (ny < 0 || ny >= n || nx < 0 || nx >= m) continue;
+
+			if (vis[ny][nx]) continue;
+
+			if (getdist({ ny,nx }, { n,start }) > d) continue;
+
+
+			if (arr[ny][nx] == 1)
+			{
+				res.push_back({ ny,nx });
+				return;
+			}
+			
+			vis[ny][nx] = 1;
+			q.push({ ny,nx });
+
 		}
+
 	}
+
+
+
 }
 
 void dodefense()
@@ -77,15 +97,28 @@ void dodefense()
 
 	cnt = 0;
 
+
 	for (int i = 0; i < n; i++)
 	{
+
 		res.clear();
-		getenemy();
-		shoot();
+
+		for(auto iter : pos)
+			shoot(iter);
+
+		for (auto iter : res)
+		{
+			if (arr[iter.first][iter.second] == 1)
+			{
+				arr[iter.first][iter.second] = 0;
+				cnt++;
+			}
+
+		}
 		onestep();
 	}
-
 	mx = max(mx, cnt);
+
 }
 
 void solve(int depth, int start)
