@@ -1,60 +1,54 @@
-#define _CRT_SECURE_NO_WARNINGS
 #include <iostream>
 #include <vector>
+#include <queue>
+#include <stack>
+#include <map>
 #include <set>
+#include <unordered_set>
+#include <unordered_map>
 #include <algorithm>
+#include <cstring>
 
 using namespace std;
 
-int main(void) {
-	ios::sync_with_stdio(0);
-	cin.tie(0);
-	vector<int> tree;
+int n, m;
+vector<int> v;
 
-	int n, m;
+int main()
+{
+	ios_base::sync_with_stdio(false);
+	cin.tie(NULL);
+	
 	cin >> n >> m;
+	v.resize(n);
 	for (int i = 0; i < n; i++)
+		cin >> v[i];
+
+	long long l = 0;
+	long long r = 1000000000;
+	long long mx = 0;
+
+	while (l <= r)
 	{
-		int input;
-		cin >> input;
-		tree.push_back(input);
-	}
+		long long mid = (l + r + 1) / 2;
 
-	sort(tree.begin(), tree.end());
-
-	int ans = 0;
-
-	long long low = 0;
-	//long long high = *prev(tree.end());
-	long long high = tree.back();
-
-
-	while (low <= high)
-	{
-		long long mid = (low + high + 1) / 2;
 		long long sum = 0;
-
-		for (auto iter : tree)
-		{
-			if (iter - mid > 0)
-			{
+		for (auto iter : v)
+			if(iter > mid)
 				sum += iter - mid;
-			}
-		}
-
+		
 		if (sum >= m)
 		{
-			ans = mid;
-			low = mid + 1;
+			l = mid + 1;
+			mx = max(mx, mid);
 		}
 		else
 		{
-			high = mid - 1;
+			r = mid - 1;
 		}
-
 	}
 
-	cout << ans;
+	cout << mx;
 
 	return 0;
 }
